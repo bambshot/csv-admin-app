@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mariadb:
+    build:
+      context: ../
+      dockerfile: .docker/mariadb/Dockerfile
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: app_db
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_USER: local_user
+      MYSQL_PASSWORD: local_pass
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - mariadb
+    environment:
+      - PMA_HOSTS=mariadb
+      - PMA_USER=local_user
+      - PMA_PASSWORD=local_pass
+    ports:
+      - 8080:80
+
+volumes:
+  db_data:
