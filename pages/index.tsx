@@ -1,8 +1,11 @@
-import Head from 'next/head'
 import { useCallback } from 'react'
+import Head from 'next/head'
 import useAspidaSWR from '@aspida/swr'
-import styles from '~/styles/Home.module.css'
+import { Button } from '@material-ui/core'
+import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import { apiClient } from '~/utils/apiClient'
+import Layout from '~/components/Layout'
+import IssuesTable from '~/components/IssuesTable'
 import type { ChangeEvent } from 'react'
 
 const Home = () => {
@@ -19,32 +22,28 @@ const Home = () => {
   if (!issues) return <div>loading...</div>
 
   return (
-    <div className={styles.container}>
+    <Layout>
       <Head>
-        <title>frourio-todo-app</title>
+        <title>CSV Admin App</title>
         <link rel="icon" href="/favicon.png" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+        />
       </Head>
-
-      <main className={styles.main}>
-        <div>
-          <input type="file" accept=".csv" onChange={insertIssues} />
-        </div>
-        <div>
-          <ul className={styles.tasks}>
-            {issues.map((issue) => (
-              <li key={issue.id}>
-                <span>{issue.title}</span> <span>{issue.type}</span>{' '}
-                <span>{issue.category}</span>
-                <br />
-                <span>{issue.start_date}</span>
-                <br />
-                <span>{issue.due_date}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+      <main>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<CloudUploadIcon />}
+          component="label"
+        >
+          CSVをアップロード
+          <input type="file" accept=".csv" onChange={insertIssues} hidden />
+        </Button>
+        <IssuesTable data={issues} />
       </main>
-    </div>
+    </Layout>
   )
 }
 
